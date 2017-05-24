@@ -37,6 +37,9 @@
   "xo": {
     "ignores": [
       "test.js"
-    ]
+    ],
+    "rules": {
+      "linebreak-style": 0
+    }
   }
 }
