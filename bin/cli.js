@@ -87,7 +87,7 @@
 								}
 							});
 						}).catch((e) => {
-							console.error('failed with error: ' + e);
+							console.error(file + ' failed with error: ' + e);
 						});
 					} else {
 						console.error('failed to read target: ' + target);
