@@ -76,7 +76,7 @@
 							}
 
 							var destination = path.join(out, file);
-							console.log('Wrting ' + destination);
+							console.log('Writing ' + destination);
 							if (!fs.existsSync(path.dirname(destination))) {
 								mkdirp(path.dirname(destination));
 							}
