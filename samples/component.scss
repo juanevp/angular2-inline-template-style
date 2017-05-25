@@ -1,0 +1,10 @@
+@import "scss_import/import";
+
+h1 {
+  color: $thecolor;
+}
+
+h1:after {
+	content: '';
+}
+

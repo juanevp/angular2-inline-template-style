@@ -5,6 +5,7 @@ var path = require('path');
 var minify = require('html-minifier').minify;
 var CleanCSS = require('clean-css');
 var less = require('less');
+var sass = require('node-sass');
 
 module.exports = function (content, options, targetDir) {
 	options = options || {};
@@ -36,7 +37,7 @@ function processStyleUrls(content, options, targetDir) {
 		return Promise.all(urls.map(function (url) {
 			let file = fs.readFileSync(getAbsoluteUrl(url, options, targetDir), 'utf-8');
 
-			let fileNamePartsRe = /^[\./]*([^]*)\.(css|less)$/g;
+			let fileNamePartsRe = /^[\./]*([^]*)\.(css|less|s[ac]ss)$/g;
 			let fileNamePartsMatches = url.match(fileNamePartsRe);
 			if (fileNamePartsMatches === null || fileNamePartsMatches.length <= 0) {
 				// Unsupported file type / malformed url
@@ -59,6 +60,24 @@ function processStyleUrls(content, options, targetDir) {
 					return output.css;
 				}, (e) => {
 					throw e;
+				});
+			} else if (extension === 'scss' || extension === 'sass') {
+				promise = new Promise(function (resolve, reject) {
+					if (!file) {
+						resolve('');
+						return;
+					}
+					sass.render({
+						data: file,
+						includePaths: [options.base ? options.base : '.'],
+						outputStyle: 'compressed'
+					}, function (err, result) {
+						if (err) {
+							reject(url + ' - ' + err.message);
+						} else {
+							resolve(result.css.toString());
+						}
+					});
 				});
 			} else {
 				promise = Promise.resolve(file);
